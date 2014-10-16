@@ -1,0 +1,118 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon - Basic scene</title>
+
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+
+    <script src="babylonjs/babylon.1.13.js"></script>
+    <script src="babylonjs/hand-1.3.8.js"></script>
+    <script src="babylonjs/cannon.js"></script>  <!-- optional physics engine -->
+</head>
+
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <script type="text/javascript">
+
+        if (BABYLON.Engine.isSupported()) {
+
+
+            var canvas = document.getElementById("renderCanvas");
+            var engine = new BABYLON.Engine(canvas, true);
+            
+            var newMeshes = [];
+
+            var scene = new BABYLON.Scene(engine);
+
+            var createScene = function () {
+
+                // Now create a basic Babylon Scene object
+                var scene = new BABYLON.Scene(engine);
+
+                // This creates and positions a free camera
+                var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), scene);
+
+                // This targets the camera to scene origin
+                //camera.setTarget(new BABYLON.Vector3.Zero());
+                camera.setPosition(new BABYLON.Vector3(10, 70, -30));
+ 
+                // This attaches the camera to the canvas
+                camera.attachControl(canvas, false);
+                
+                // směr pohledu kamery y
+                scene.activeCamera.alpha += 1;
+                //směr pohledu kamery x
+                scene.activeCamera.beta += 1;
+
+                // This creates a light, aiming 0,1,0 - to the sky.
+                var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+
+                // Dim the light a small amount
+                light.intensity = .5;
+
+                // Leave this function
+                return scene;
+
+            };  // End of createScene function
+
+            // Now, call the createScene function that you just finished creating
+            var scene = createScene();
+
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                scene.render();
+            });
+
+            // Watch for browser/canvas resize events
+            window.addEventListener("resize", function () {
+                engine.resize();
+            });
+
+            function importedMeshes(mesh) {
+                mesh.position = new BABYLON.Vector3(0, 0, 0);
+                mesh.scaling = new BABYLON.Vector3(1, 1, 1);
+                mesh.material = new BABYLON.StandardMaterial("", scene);
+                mesh.material.diffuseTexture = new BABYLON.Texture("models/characters/babylon/man.jpg", scene);
+                //mesh.bumpTexture = new BABYLON.Texture("models/characters/babylon/man.jpg", mesh);
+             
+                //mesh.rotation.x = (Math.Pi * 45)/180;
+
+                /*var materialSphere5 = new BABYLON.StandardMaterial("texture5", scene);
+                */
+                //var pom = scene.meshes[0];
+                //var materialSphere1 = new BABYLON.StandardMaterial("texture1", scene);
+                //materialSphere1.wireframe = true;
+                //materialSphere1.diffuseTexture = new BABYLON.Texture("models/characters/babylon/man.jpg", scene);
+                //pom.material.diffuseColor = new BABYLON.Color3(1, 0.2, 0);
+             
+            }
+
+            BABYLON.SceneLoader.ImportMesh("", "models/characters/babylon/", "man.babylon", scene, function (newMeshes) {
+                importedMeshes(newMeshes[0]);
+
+                
+
+            });
+
+
+        }
+
+    </script>
+
+</body>
+</html>

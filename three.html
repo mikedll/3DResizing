@@ -1,0 +1,368 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>three.js webgl - loaders - OBJ loader</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        #info {
+            color: #fff;
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display: block;
+        }
+
+            #info a, .button {
+                color: #f00;
+                font-weight: bold;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <a href="http://threejs.org" target="_blank">three.js</a> - OBJLoader test
+    </div>
+
+    <script src="threejs/build/three.min.js"></script>
+    <script src="threejs/loaders/OBJLoader.js"></script>
+    <script src="threejs/loaders/ColladaLoader.js"></script>
+    <script src="threejs/controls/TrackballControls.js"></script>
+    <script src="threejs/Detector.js"></script>
+    <script src="threejs/libs/stats.min.js"></script>
+
+    <script src="babylonjs/babylon.1.13.js"></script>
+
+    <script>
+
+        var container, stats;
+        var objects;
+
+        var camera, scene, renderer;
+
+        var mouseX = 0, mouseY = 0;
+        var mouseXOnMouseDown = 0;
+
+        var windowHalfX = window.innerWidth / 2;
+        var windowHalfY = window.innerHeight / 2;
+
+        var targetRotation = 0;
+        var targetRotationOnMouseDown = 0;
+
+        init();
+        animate();
+
+
+        function init() {
+
+            container = document.createElement('div');
+            document.body.appendChild(container);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.position.z = 250;
+
+
+            // scene
+
+
+            scene = new THREE.Scene();
+
+            var ambient = new THREE.AmbientLight(0x101030);
+            scene.add(ambient);
+
+            var directionalLight = new THREE.DirectionalLight(0xffeedd);
+            directionalLight.position.set(0, 0, 1);
+            scene.add(directionalLight);
+
+
+            //group
+            group = new THREE.Object3D();
+            group.position.x = 0.0;
+            group.position.y = 0.0;
+            group.position.z = 0.0;
+            scene.add(group);
+
+            // texture
+
+            var manager = new THREE.LoadingManager();
+            manager.onProgress = function (item, loaded, total) {
+
+                console.log(item, loaded, total);
+
+            };
+            /*
+            var texture = new THREE.Texture();
+
+            var loader = new THREE.ImageLoader( manager );
+            loader.load( 'femchar.jpg', function ( image ) {
+
+                texture.image = image;
+                texture.needsUpdate = true;
+
+
+            } );
+
+            // model
+            */
+            var loader = new THREE.OBJLoader( manager );
+            loader.load( 'models/characters/man.obj', function ( object ) {
+
+                object.traverse( function ( child ) {
+
+                    if (child instanceof THREE.Mesh) {
+                        for (var i = 0; i < child.geometry.vertices.length; i++) {
+                            objects.add(child.geometry.vertices[i]);
+                        }
+                    }
+
+                } );
+                object.name = "postava";
+                object.position.y = -80;
+                object.position.x += 30;
+                scene.add(object);
+                group.add(object);
+
+            }
+
+            );
+
+            ////////////////////////////////////// -----OBJEKT 2 ------ ///////////////////////////////////////
+            /*
+            // textura 2 - triko
+            var manager2 = new THREE.LoadingManager();
+            manager2.onProgress = function (item, loaded, total) {
+
+                console.log(item, loaded, total);
+
+            };
+
+            var texture2 = new THREE.Texture();
+
+            var loader2 = new THREE.ImageLoader(manager2);
+            loader2.load('models/clothes/grey-tshirt/diffuse-map.jpg', function (image2) {
+
+                texture2.image = image2;
+                texture2.needsUpdate = true;
+
+            } );
+
+            /*
+            // objekt 2 - triko
+            var loader2 = new THREE.OBJLoader( manager2 );
+            loader2.load('models/clothes/grey-tshirt/grey-tshirt.obj', function (object2) {
+
+                object2.traverse(function (child) {
+
+                    if (child instanceof THREE.Mesh) {
+
+                        child.material.map = texture2;
+
+
+                    }
+
+                });
+
+                object2.position.y = -80;
+
+                scene.add(object2);
+                group.add(object2);
+            });
+            */
+            ////////////////////////////////////// -----OBJEKT 3 ------ ///////////////////////////////////////
+
+            // textura 3 - kalhoty
+            var manager3 = new THREE.LoadingManager();
+            manager3.onProgress = function (item, loaded, total) {
+
+                console.log(item, loaded, total);
+
+            };
+
+            var texture3 = new THREE.Texture();
+
+            var loader3 = new THREE.ImageLoader(manager3);
+            loader3.load('models/clothes/denim-jeans/diffuse-map.jpg', function (image3) {
+
+                texture3.image = image3;
+                texture3.needsUpdate = true;
+
+            });
+
+            // objekt 3 - kalhoty
+            var loader3 = new THREE.OBJLoader(manager3);
+            loader3.load('models/clothes/denim-jeans/denim-jeans.obj', function (object3) {
+
+                object3.traverse(function (child) {
+
+                    if (child instanceof THREE.Mesh) {
+
+                        child.material.map = texture3;
+                        child.geometry.verticesNeedUpdate = true;
+
+                        for (var i = 0; i < child.geometry.vertices.length; i++) {
+                            if (child.geometry.vertices[i].y < 50 && child.geometry.vertices[i].y > 30) {
+                                var postava = group.getObjectByName("postava");
+                                console.log(postava.name);
+                                console.log(postava.matrix.getMaxScaleOnAxis.toString());
+                                var manY = 20;
+                                var manZ = 20;
+                                child.geometry.vertices[i].set(child.geometry.vertices[i].x, child.geometry.vertices[i].y - 20, child.geometry.vertices[i].z);
+
+                            }
+                        }
+                    }
+
+                });
+
+                object3.position.y = -80;
+                object3.name = "test";
+                scene.add(object3);
+
+                group.add(object3);
+
+
+                var helper = new THREE.BoundingBoxHelper(object3, 0xff0000);
+                helper.update();
+
+
+                if (object3.geometry) {
+                    for (j = 0; j < object3.geometry.vertices.length; j++) {
+                        console.log(object3.geometry.vertices);
+                    }
+                }
+
+
+            });
+
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(0xCCCCCC, 1);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            document.addEventListener('mousedown', onDocumentMouseDown, false);
+            document.addEventListener('touchstart', onDocumentTouchStart, false);
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+            /*	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener('mousedown', onDocumentMouseDown, false);*/
+            //
+
+            window.addEventListener('resize', onWindowResize, false);
+
+        }
+
+        function onWindowResize() {
+
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function onDocumentMouseDown(event) {
+
+            event.preventDefault();
+
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            document.addEventListener('mouseup', onDocumentMouseUp, false);
+            document.addEventListener('mouseout', onDocumentMouseOut, false);
+
+            mouseXOnMouseDown = event.clientX - windowHalfX;
+            targetRotationOnMouseDown = targetRotation;
+
+        }
+
+        function onDocumentMouseMove(event) {
+
+            /*   mouseXOnMouseDown = event.clientX - windowHalfX;
+            mouseX = ( event.clientX - windowHalfX ) / 2;
+            mouseY = ( event.clientY - windowHalfY ) / 2;
+            */
+
+            mouseX = event.clientX - windowHalfX;
+
+            targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
+        }
+
+        function onDocumentMouseUp(event) {
+
+            document.removeEventListener('mousemove', onDocumentMouseMove, false);
+            document.removeEventListener('mouseup', onDocumentMouseUp, false);
+            document.removeEventListener('mouseout', onDocumentMouseOut, false);
+        }
+
+        function onDocumentMouseOut(event) {
+
+            document.removeEventListener('mousemove', onDocumentMouseMove, false);
+            document.removeEventListener('mouseup', onDocumentMouseUp, false);
+            document.removeEventListener('mouseout', onDocumentMouseOut, false);
+        }
+
+        function onDocumentTouchStart(event) {
+
+            if (event.touches.length == 1) {
+
+                event.preventDefault();
+
+                mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
+                targetRotationOnMouseDown = targetRotation;
+            }
+        };
+
+        function onDocumentTouchMove(event) {
+
+            if (event.touches.length == 1) {
+
+                event.preventDefault();
+
+                mouseX = event.touches[0].pageX - windowHalfX;
+                targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
+            }
+        };
+
+        //
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+            render();
+
+
+
+
+        }
+
+        function render() {
+
+            camera.position.x = (mouseX - camera.position.x) * .25;
+            camera.position.y = (40);
+            group.rotation.y += (targetRotation - group.rotation.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+
+</body>
+</html>
