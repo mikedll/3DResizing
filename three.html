@@ -104,6 +104,7 @@
                 console.log(item, loaded, total);
 
             };
+
             /*
             var texture = new THREE.Texture();
 
@@ -125,7 +126,7 @@
 
                     if (child instanceof THREE.Mesh) {
                         for (var i = 0; i < child.geometry.vertices.length; i++) {
-                            objects.add(child.geometry.vertices[i]);
+                            //objects.add(child.geometry.vertices[i]);
                         }
                     }
 
@@ -139,49 +140,6 @@
             }
 
             );
-
-            ////////////////////////////////////// -----OBJEKT 2 ------ ///////////////////////////////////////
-            /*
-            // textura 2 - triko
-            var manager2 = new THREE.LoadingManager();
-            manager2.onProgress = function (item, loaded, total) {
-
-                console.log(item, loaded, total);
-
-            };
-
-            var texture2 = new THREE.Texture();
-
-            var loader2 = new THREE.ImageLoader(manager2);
-            loader2.load('models/clothes/grey-tshirt/diffuse-map.jpg', function (image2) {
-
-                texture2.image = image2;
-                texture2.needsUpdate = true;
-
-            } );
-
-            /*
-            // objekt 2 - triko
-            var loader2 = new THREE.OBJLoader( manager2 );
-            loader2.load('models/clothes/grey-tshirt/grey-tshirt.obj', function (object2) {
-
-                object2.traverse(function (child) {
-
-                    if (child instanceof THREE.Mesh) {
-
-                        child.material.map = texture2;
-
-
-                    }
-
-                });
-
-                object2.position.y = -80;
-
-                scene.add(object2);
-                group.add(object2);
-            });
-            */
             ////////////////////////////////////// -----OBJEKT 3 ------ ///////////////////////////////////////
 
             // textura 3 - kalhoty
@@ -214,10 +172,10 @@
                         child.geometry.verticesNeedUpdate = true;
 
                         for (var i = 0; i < child.geometry.vertices.length; i++) {
-                            if (child.geometry.vertices[i].y < 50 && child.geometry.vertices[i].y > 30) {
-                                var postava = group.getObjectByName("postava");
-                                console.log(postava.name);
-                                console.log(postava.matrix.getMaxScaleOnAxis.toString());
+                            if (child.geometry.vertices[i].y < 50 ) {
+                                //var postava = group.getObjectByName("postava");
+                                //console.log(postava.name);
+                                //console.log(postava.matrix.getMaxScaleOnAxis.toString());
                                 var manY = 20;
                                 var manZ = 20;
                                 child.geometry.vertices[i].set(child.geometry.vertices[i].x, child.geometry.vertices[i].y - 20, child.geometry.vertices[i].z);
@@ -258,10 +216,6 @@
             document.addEventListener('touchstart', onDocumentTouchStart, false);
             document.addEventListener('touchmove', onDocumentTouchMove, false);
 
-            /*	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.addEventListener('mousedown', onDocumentMouseDown, false);*/
-            //
-
             window.addEventListener('resize', onWindowResize, false);
 
         }
@@ -292,11 +246,6 @@
         }
 
         function onDocumentMouseMove(event) {
-
-            /*   mouseXOnMouseDown = event.clientX - windowHalfX;
-            mouseX = ( event.clientX - windowHalfX ) / 2;
-            mouseY = ( event.clientY - windowHalfY ) / 2;
-            */
 
             mouseX = event.clientX - windowHalfX;
 
@@ -345,9 +294,6 @@
 
             requestAnimationFrame(animate);
             render();
-
-
-
 
         }
 
