@@ -17,11 +17,45 @@ var windowHalfY = window.innerHeight / 2;
 var targetRotation = 0;
 var targetRotationOnMouseDown = 0;
 
-
 function onLoaded() {
 	init();
 	animate();
 }
+
+var Clothes = (function() {
+    function Clothes(path, name) {
+        this.path = path;
+        this.name = name;
+    }
+
+    Clothes.prototype.fitAndAppend = function(target, scene, group) {
+        var _this = this;
+
+        var manager = new THREE.LoadingManager();
+        manager.onProgress = function (item, loaded, total) {
+            console.log(item, loaded, total);
+        };
+
+        var imageLoader = new THREE.ImageLoader(manager);
+        imageLoader.load(this.path, function (object) {
+                             object.traverse(function(child){
+                                                 var productBox = new THREE.BoundingBoxHelper(object, 0xff0000);
+                                                 productBox.update();
+                                                 child.material.map = new THREE.Texture();
+                                                 child.geometry.verticesNeedUpdate = true;
+                                                 
+                                             });
+                             _this.obj = object;
+                             _this.obj.name = this.name;
+                             scene.add(this.obj);
+                             group.add(this.obj);
+                         });
+        
+        return;
+    };
+                   
+    return Clothes;
+})();
 
 function init() {
     container = document.createElement('div');
@@ -127,6 +161,8 @@ function loadModels() {
 
     );
 
+    var c1 = new Clothes('res/models/clothes/denim-jeans/denim-jeans.obj', 'product');
+    c1.fitAndAppend(figureBox, scene, group);
 }
 
 function deadCode() {
