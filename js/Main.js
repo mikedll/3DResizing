@@ -36,19 +36,21 @@ var Clothes = (function() {
             console.log(item, loaded, total);
         };
 
-        var imageLoader = new THREE.ImageLoader(manager);
-        imageLoader.load(this.path, function (object) {
+        var objLoader = new THREE.OBJLoader(manager);
+        objLoader.load(this.path, function (object) {
                              object.traverse(function(child){
-                                                 var productBox = new THREE.BoundingBoxHelper(object, 0xff0000);
-                                                 productBox.update();
-                                                 child.material.map = new THREE.Texture();
-                                                 child.geometry.verticesNeedUpdate = true;
+                                                 if (child instanceof THREE.Mesh) {
+                                                     var productBox = new THREE.BoundingBoxHelper(object, 0xff0000);
+                                                     productBox.update();
+                                                     child.material.map = new THREE.Texture();
+                                                     child.geometry.verticesNeedUpdate = true;
+                                                 }
                                                  
                                              });
                              _this.obj = object;
-                             _this.obj.name = this.name;
-                             scene.add(this.obj);
-                             group.add(this.obj);
+                             _this.obj.name = _this.name;
+                             scene.add(_this.obj);
+                             group.add(_this.obj);
                          });
         
         return;
