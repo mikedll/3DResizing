@@ -67,28 +67,12 @@ function init() {
 }
 
 function loadModels() {
-    // texture
 
+    // texture
     var manager = new THREE.LoadingManager();
     manager.onProgress = function (item, loaded, total) {
-
         console.log(item, loaded, total);
-
     };
-    /*
-    var texture = new THREE.Texture();
-
-    var loader = new THREE.ImageLoader( manager );
-    loader.load( 'femchar.jpg', function ( image ) {
-
-        texture.image = image;
-        texture.needsUpdate = true;
-
-
-    } );
-
-    
-    */
 
     // figure model load
     var loader = new THREE.OBJLoader(manager);
@@ -143,6 +127,10 @@ function loadModels() {
 
     );
 
+}
+
+function deadCode() {
+
     // texture 3 - pants
     var manager3 = new THREE.LoadingManager();
     manager3.onProgress = function (item, loaded, total) {
@@ -151,18 +139,17 @@ function loadModels() {
 
     };
 
-    var texture3 = new THREE.Texture();
+    // var loader3 = new THREE.ImageLoader(manager3);
+    // loader3.load('res/models/clothes/denim-jeans/diffuse-map.jpg', function (image3) {
 
-    var loader3 = new THREE.ImageLoader(manager3);
-    loader3.load('res/models/clothes/denim-jeans/diffuse-map.jpg', function (image3) {
+    //     texture3.image = image3;
+    //     texture3.needsUpdate = true;
 
-        texture3.image = image3;
-        texture3.needsUpdate = true;
-
-    });
+    // });
 
     // objekt 3 - pants
 
+    var texture3 = new THREE.Texture();
     var loader3 = new THREE.OBJLoader(manager3);
     loader3.load('res/models/clothes/denim-jeans/denim-jeans.obj', function (object3) {
 
@@ -258,7 +245,7 @@ function loadModels() {
         //    console.log(object3.geometry.vertices);
         //}
         //}
-   });	
+   });	    
 }
 
 function onWindowResize() {
