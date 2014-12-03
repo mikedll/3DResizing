@@ -1,3 +1,8 @@
+
 3DResizing
 ==========
-edit
+
+
+https://github.com/mareksip/3DResizing
+
+
