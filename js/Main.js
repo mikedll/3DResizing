@@ -44,6 +44,11 @@ var Clothes = (function() {
                                                      productBox.update();
                                                      child.material.map = new THREE.Texture();
                                                      child.geometry.verticesNeedUpdate = true;
+
+                                                     for (var i = 0; i < child.geometry.vertices.length; i++) {
+                                                         child.geometry.vertices[i].y -= 45;
+                                                     }
+
                                                  }
                                                  
                                              });
