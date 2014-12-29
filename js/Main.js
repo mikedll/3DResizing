@@ -23,8 +23,9 @@ function onLoaded() {
 }
 
 var Clothes = (function() {
-    function Clothes(path, name) {
+    function Clothes(path, imagePath, name) {
         this.path = path;
+        this.imagePath = imagePath;
         this.name = name;
     }
 
@@ -36,21 +37,26 @@ var Clothes = (function() {
             console.log(item, loaded, total);
         };
 
+        var texture = new THREE.Texture();
+        var imgLoader = new THREE.ImageLoader(manager);
+        imgLoader.load(this.imagePath, function (image3) {
+                           texture.image = image3;
+                           texture.needsUpdate = true;
+                       });
+
         var objLoader = new THREE.OBJLoader(manager);
         objLoader.load(this.path, function (object) {
                              object.traverse(function(child){
                                                  if (child instanceof THREE.Mesh) {
                                                      var productBox = new THREE.BoundingBoxHelper(object, 0xff0000);
                                                      productBox.update();
-                                                     child.material.map = new THREE.Texture();
+                                                     child.material.map = texture;
                                                      child.geometry.verticesNeedUpdate = true;
 
                                                      for (var i = 0; i < child.geometry.vertices.length; i++) {
                                                          child.geometry.vertices[i].y -= 45;
                                                      }
-
                                                  }
-                                                 
                                              });
                              _this.obj = object;
                              _this.obj.name = _this.name;
@@ -168,7 +174,9 @@ function loadModels() {
 
     );
 
-    var c1 = new Clothes('res/models/clothes/denim-jeans/denim-jeans.obj', 'product');
+    var c1 = new Clothes('res/models/clothes/denim-jeans/denim-jeans.obj',
+                         'res/models/clothes/denim-jeans/diffuse-map.jpg',
+                         'product');
     c1.fitAndAppend(figureBox, scene, group);
 }
 
@@ -177,9 +185,7 @@ function deadCode() {
     // texture 3 - pants
     var manager3 = new THREE.LoadingManager();
     manager3.onProgress = function (item, loaded, total) {
-
         console.log(item, loaded, total);
-
     };
 
     // var loader3 = new THREE.ImageLoader(manager3);
